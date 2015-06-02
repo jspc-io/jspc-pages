@@ -1,27 +1,32 @@
 var gulp = require('gulp');
 
+var aws = require('gulp-awspublish');
 var bower = require('gulp-bower');
+var cache = require('gulp-cache');
 var concat = require('gulp-concat');
 var data = require('gulp-data');
 var declare = require('gulp-declare');
 var del = require('del');
-var minifyCss = require('gulp-minify-css');
+var filter = require('gulp-filter');
 var gutil = require('gulp-util');
 var handlebars = require('gulp-compile-handlebars');
+var imagemin = require('gulp-imagemin');
 var jshint = require('gulp-jshint');
+var jsonlint = require('gulp-json-lint');
+var minifyCss = require('gulp-minify-css');
+var minifyHTML = require('gulp-minify-html');
+var objectAssign = require('object-assign');
 var path = require('path');
 var rename = require('gulp-rename');
 var rev = require('gulp-rev');
+var revNapkin = require('gulp-rev-napkin');
+var revReplace = require('gulp-rev-replace');
 var sass = require('gulp-sass');
 var scsslint = require('gulp-scss-lint');
 var sequence = require('run-sequence');
+var ttf2woff = require('gulp-ttf2woff');
 var uglify = require('gulp-uglify');
 var wrap = require('gulp-wrap');
-var imagemin = require('gulp-imagemin');
-var cache = require('gulp-cache');
-var objectAssign = require('object-assign');
-var jsonlint = require('gulp-json-lint');
-var ttf2woff = require('gulp-ttf2woff');
 
 var paths = {};
 
@@ -82,6 +87,12 @@ var assets = {
     }
 };
 
+var creds = {
+    'key': process.env.AWS_ACCESS_KEY_ID,
+    'secret': process.env.AWS_SECRET_ACCESS_KEY,
+    'bucket': 'jspc-static-site'
+};
+
 var isDev = gutil.env.dev;
 
 gulp.task('env', function() {
@@ -130,7 +141,7 @@ gulp.task('compile:sass', function() {
         .pipe(sass())
         .pipe(isDev ? gutil.noop() : concat('all.css'))
         .pipe(isDev ? gutil.noop() : minifyCss())
-        .pipe(gulp.dest(isDev ? paths.build.css : paths.dist.js))
+        .pipe(gulp.dest(isDev ? paths.build.css : paths.dist.css))
 });
 
 gulp.task('compile:js', function() {
@@ -170,10 +181,66 @@ gulp.task('compile:hbs', function() {
     return gulp.src(paths.src.html.index)
         .pipe(handlebars(templateData, options))
         .pipe(rename(paths.build.html))
+        .pipe(isDev ? gutil.noop() : minifyHTML())
         .pipe(gulp.dest(isDev ? paths.build.root : paths.dist.root));
 });
 
-gulp.task('post', []);
+gulp.task('post:version', function() {
+    return gulp.src(["dist/**/*.css", "dist/**/*.js", "dist/**/*.png"])
+        .pipe(rev())
+        .pipe(gulp.dest(paths.dist.root))
+        .pipe(revNapkin())
+        .pipe(rev.manifest())
+        .pipe(gulp.dest(paths.dist.root))
+});
+
+gulp.task('post:replace', function() {
+    var manifestFile = path.join(paths.dist.root, 'rev-manifest.json');
+    var manifest = gulp.src(manifestFile);
+    del(manifestFile);
+
+    return gulp.src(path.join(paths.dist.root, "index.html"))
+        .pipe(revReplace({manifest: manifest}))
+        .pipe(gulp.dest(paths.dist.root))
+});
+
+var headers = function(filetype) {
+    switch(filetype){
+    case 'html':
+        return {'Cache-Control': 'no-cache, must-revalidate, no-store'};
+    default:
+        return {'Cache-Control': 'max-age=86400, must-revalidate, no-transform, public'};
+    };
+};
+
+var publisher = aws.create(creds);
+
+gulp.task('deploy:html', function() {
+    return gulp.src('dist/**/*.html')
+        .pipe(aws.gzip())
+        .pipe(publisher.publish(headers('html')))
+        .pipe(aws.reporter())
+});
+
+gulp.task('deploy:assets', function() {
+    return gulp.src(['dist/**', '!dist/**/*.html'])
+        .pipe(aws.gzip())
+        .pipe(publisher.publish(headers()))
+        .pipe(aws.reporter())
+
+});
+
+gulp.task('deploy', function(callback) {
+    if (! isDev) {
+        sequence('deploy:assets', 'deploy:html');
+    }
+});
+
+gulp.task('post', function(callback) {
+    if (! isDev) {
+        sequence('post:version', 'post:replace', callback);
+    }
+});
 
 gulp.task('compile', function(callback) {
     sequence('compile:clean', ['compile:sass', 'compile:img', 'compile:js', 'compile:hbs', 'compile:fonts'], callback);
@@ -182,5 +249,5 @@ gulp.task('compile', function(callback) {
 gulp.task('lint', ['lint:sass', 'lint:js', 'lint:json']);
 
 gulp.task('default', function(callback) {
-    sequence('env', 'lint', 'bower', 'compile', 'post', callback);
+    sequence('env', 'lint', 'bower', 'compile', 'post', 'deploy', callback);
 });
