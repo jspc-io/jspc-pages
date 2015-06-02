@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang='en'>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>jspc.me</title>
+
+    {{#each css}}
+      <link rel="stylesheet" type="text/css" href="css/{{this}}">
+    {{/each}}
+  </head>
+
+  <body>
+    <div class="wrap">
+      <div class="container-fluid clear-top main">
+        <header>
+          {{> header}}
+        </header>
+
+        <div class='col-md-8 col-xs-12 col-sm-6'>
+          {{> blurb}}
+        </div>
+
+        <div class='col-md-4 col-xs-12 col-sm-6'>
+          {{> links}}
+        </div>
+      </div>
+    </div>
+
+    <footer class='footer'>
+      {{> footer}}
+    </footer>
+
+    {{#each js}}
+      <script src="js/{{this}}"></script>
+    {{/each}}
+  </body>
+
+</html>

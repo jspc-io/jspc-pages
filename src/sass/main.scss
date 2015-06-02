@@ -1,0 +1,56 @@
+// -*- mode: sass -*-
+
+$font-stack:    'EB Garamond', serif;
+$primary-color: #333;
+$title-font: 250% 'LibreCaslon', serif;
+
+body {
+  color: $primary-color;
+  font: 1.5rem $font-stack;
+  height: 100%;
+}
+
+h1 {
+  font: $title-font;
+}
+
+header {
+  text-align: right;
+}
+
+.wrap {
+  min-height: 100%;
+}
+
+.main {
+  overflow: auto;
+  padding-bottom: 150px;
+}
+
+.footer {
+  clear: both;
+  font-size: .9rem;
+  height: 150px;
+  margin-top: -150px;
+  padding-top: 20px;
+  position: relative;
+  text-align: center;
+}
+
+.link-text {
+  font-size: 1.8rem;
+}
+
+.link-img {
+  padding: 5px;
+}
+
+.blurb {
+  a:link,
+  a:visited,
+  a:hover,
+  a:active {
+    color: $primary-color;
+    font-weight: bold;
+  };
+}

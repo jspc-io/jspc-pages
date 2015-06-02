@@ -1,0 +1,42 @@
+{
+    "fullName": "James Condron",
+    "title": "devops extraordinaire",
+    "blurbLines": [
+        "I'm James. I'm a twenty-something living in London and I do devopsy things around systems and software.",
+        "I've worked almost everywhere, from datacenter NOCs to Soho digital studios with a smattering of financial offices along the way.",
+        "I've also a handful of contributions to various open-source projects; I've contributed patches to the linux kernel, a handful of optimisations, way-back-when, to the firefox browser and once managed to break a release candidate for SaltStack.",
+        "At a previous job, in a previous life, I even managed to, accidentally, <a href='//engineering.fundingcircle.com/blog/2015/03/12/navvy/'>create my own container standard</a> when studying Docker- don't worry; you'll never have to use it.",
+        "I was once convinced I could revolutionise the casino industry by rewriting all of it's logic in <a href='//bitbucket.org/jspc/barrel-roll/src'>ruby</a>. It, uh, never really took off.",
+        "I'm well versed and experienced in clustered computing, containerisation and the Mesosphere stack.",
+        "I can write a mean deployment script in <a href='//github.com/FundingCircle/capistrano-ext-superusers/graphs/contributors'>capistrano</a>, fabric, <a href='//github.com/jspc-io/jspc-pages/blob/master/gulpfile.js'>gulp</a> and, more-likely-than-not, more.",
+        "I've written more AWS cloudformation than I think is entirely healthy.",
+        "I've also spent an unhealthy amount of time writing NRPE plugins for <a href='//github.com/jspc/postgres_nags'>postgres</a>, <a href='//github.com/jspc/resque_workers_nag'>resque</a> and <a href='//github.com/jspc/cassandra_nag'>cassandra</a>",
+        "I can make <a href='//github.com/jspc/capistrano-ext-chef'>chef</a> dance like a puppet, something something pun <a href='//github.com/jspc/mick/tree/master/playbooks'>ansible</a> too."
+    ],
+    "profiles": [
+        {
+            "name": "Github",
+            "icon": "github.png",
+            "alt":  "jspc on github",
+            "href": "github.com/jspc"
+        },
+        {
+            "name": "Twitter",
+            "icon": "twitter.png",
+            "alt":  "@zerointernet on twitter",
+            "href": "twitter.com/zerointernet"
+        },
+        {
+            "name": "BitBucket",
+            "icon": "bitbucket.png",
+            "alt":  "jspc on bitbucket",
+            "href": "bitbucket.org/jspc"
+        },
+        {
+            "name": "LinkedIn",
+            "icon": "linkedin.png",
+            "alt":  "zerointernet on linkedin",
+            "href": "uk.linkedin.com/in/zerointernet"
+        }
+    ]
+}
