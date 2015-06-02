@@ -1,0 +1,46 @@
+{
+  "name": "jspc-pages",
+  "version": "0.0.0",
+  "description": "Statics and assets for jspc.io",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jspc-io/jspc-pages.git"
+  },
+  "author": "jspc",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jspc-io/jspc-pages/issues"
+  },
+  "homepage": "https://github.com/jspc-io/jspc-pages",
+  "devDependencies": {
+    "gulp-rename": "~1.2.2",
+    "gulp-concat": "~2.5.2",
+    "gulp-uglify": "~1.2.0",
+    "gulp-jshint": "~1.11.0",
+    "gulp-sass": "~2.0.1",
+    "gulp-util": "~3.0.4",
+    "gulp": "~3.8.11",
+    "gulp-rev": "~4.0.0",
+    "gulp-bower": "0.0.10",
+    "run-sequence": "~1.1.0",
+    "gulp-scss-lint": "~0.2.0",
+    "gulp-declare": "~0.3.0",
+    "gulp-handlebars": "~4.0.0",
+    "gulp-wrap": "~0.11.0",
+    "gulp-compile-handlebars": "~0.5.0",
+    "gulp-data": "~1.2.0",
+    "del": "~1.2.0",
+    "brace-expansion": "~1.1.0",
+    "wrappy": "~1.0.1",
+    "gulp-minify-css": "~1.1.1",
+    "gulp-cache": "~0.2.9",
+    "gulp-imagemin": "~2.2.1",
+    "object-assign": "~2.0.0",
+    "gulp-json-lint": "~0.1.0",
+    "gulp-ttf2woff": "~1.0.1"
+  }
+}

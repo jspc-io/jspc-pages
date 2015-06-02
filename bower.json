@@ -1,0 +1,22 @@
+{
+  "name": "jspc",
+  "version": "0.0.1",
+  "homepage": "https://github.com/jspc-io/jspc-pages",
+  "authors": [
+    "jspc <james@zero-internet.org.uk>"
+  ],
+  "description": "Some stuff",
+  "main": "index.js",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "konami.js": "mckamey/konami-js#~1.0.1",
+    "bootstrap": "~3.3.4"
+  }
+}
