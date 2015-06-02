@@ -1,5 +1,10 @@
 var gulp = require('gulp');
 
+var aws = require('gulp-awspublish');
+var minifyHTML = require('gulp-minify-html');
+var revReplace = require('gulp-rev-replace');
+var filter = require('gulp-filter');
+var revNapkin = require('gulp-rev-napkin');
 var bower = require('gulp-bower');
 var concat = require('gulp-concat');
 var data = require('gulp-data');
@@ -82,6 +87,13 @@ var assets = {
     }
 };
 
+var creds = {
+    'key': process.env.AWS_ACCESS_KEY_ID,
+    'secret': process.env.AWS_SECRET_ACCESS_KEY,
+    'bucket': 'jspc-static-site'
+  };
+
+
 var isDev = gutil.env.dev;
 
 gulp.task('env', function() {
@@ -130,7 +142,7 @@ gulp.task('compile:sass', function() {
         .pipe(sass())
         .pipe(isDev ? gutil.noop() : concat('all.css'))
         .pipe(isDev ? gutil.noop() : minifyCss())
-        .pipe(gulp.dest(isDev ? paths.build.css : paths.dist.js))
+        .pipe(gulp.dest(isDev ? paths.build.css : paths.dist.css))
 });
 
 gulp.task('compile:js', function() {
@@ -170,10 +182,66 @@ gulp.task('compile:hbs', function() {
     return gulp.src(paths.src.html.index)
         .pipe(handlebars(templateData, options))
         .pipe(rename(paths.build.html))
+        .pipe(isDev ? gutil.noop() : minifyHTML())
         .pipe(gulp.dest(isDev ? paths.build.root : paths.dist.root));
 });
 
-gulp.task('post', []);
+gulp.task('post:version', function() {
+    return gulp.src(["dist/**/*.css", "dist/**/*.js", "dist/**/*.png"])
+        .pipe(rev())
+        .pipe(gulp.dest(paths.dist.root))
+        .pipe(revNapkin())
+        .pipe(rev.manifest())
+        .pipe(gulp.dest(paths.dist.root))
+});
+
+gulp.task('post:replace', function() {
+    var manifestFile = path.join(paths.dist.root, 'rev-manifest.json');
+    var manifest = gulp.src(manifestFile);
+    del(manifestFile);
+
+    return gulp.src(path.join(paths.dist.root, "index.html"))
+        .pipe(revReplace({manifest: manifest}))
+        .pipe(gulp.dest(paths.dist.root))
+});
+
+var headers = function(filetype) {
+    switch(filetype){
+    case 'html':
+        return {'Cache-Control': 'no-cache, must-revalidate, no-store'};
+    default:
+        return {'Cache-Control': 'max-age=86400, must-revalidate, no-transform, public'};
+    };
+};
+
+var publisher = aws.create(creds);
+
+gulp.task('deploy:html', function() {
+    return gulp.src('dist/**/*.html')
+        .pipe(aws.gzip())
+        .pipe(publisher.publish(headers('html')))
+        .pipe(aws.reporter())
+});
+
+gulp.task('deploy:assets', function() {
+    return gulp.src(['dist/**', '!dist/**/*.html'])
+        .pipe(aws.gzip())
+        .pipe(publisher.publish(headers()))
+        .pipe(aws.reporter())
+
+});
+
+gulp.task('deploy', function(callback) {
+    if (! isDev) {
+        sequence('deploy:assets', 'deploy:html');
+    }
+});
+
+gulp.task('post', function(callback) {
+    if (! isDev) {
+        sequence('post:version', 'post:replace', callback);
+    }
+});
 
 gulp.task('compile', function(callback) {
     sequence('compile:clean', ['compile:sass', 'compile:img', 'compile:js', 'compile:hbs', 'compile:fonts'], callback);
@@ -182,5 +250,5 @@ gulp.task('compile', function(callback) {
 gulp.task('lint', ['lint:sass', 'lint:js', 'lint:json']);
 
 gulp.task('default', function(callback) {
-    sequence('env', 'lint', 'bower', 'compile', 'post', callback);
+    sequence('env', 'lint', 'bower', 'compile', 'post', 'deploy', callback);
 });
