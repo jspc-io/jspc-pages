@@ -20,7 +20,7 @@
     "brace-expansion": "~1.1.0",
     "del": "~1.2.0",
     "gulp": "~3.8.11",
-    "gulp-awspublish": "0.0.23"
+    "gulp-awspublish": "0.0.23",
     "gulp-bower": "0.0.10",
     "gulp-cache": "~0.2.9",
     "gulp-compile-handlebars": "~0.5.0",
@@ -46,6 +46,6 @@
     "gulp-wrap": "~0.11.0",
     "object-assign": "~2.0.0",
     "run-sequence": "~1.1.0",
-    "wrappy": "~1.0.1",
+    "wrappy": "~1.0.1"
   }
 }
