@@ -91,8 +91,7 @@ var creds = {
     'key': process.env.AWS_ACCESS_KEY_ID,
     'secret': process.env.AWS_SECRET_ACCESS_KEY,
     'bucket': 'jspc-static-site'
-  };
-
+};
 
 var isDev = gutil.env.dev;
 
