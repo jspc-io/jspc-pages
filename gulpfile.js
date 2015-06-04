@@ -231,15 +231,11 @@ gulp.task('deploy:assets', function() {
 });
 
 gulp.task('deploy', function(callback) {
-    if (! isDev) {
-        sequence('deploy:assets', 'deploy:html');
-    }
+    sequence('deploy:assets', 'deploy:html', callback);
 });
 
 gulp.task('post', function(callback) {
-    if (! isDev) {
-        sequence('post:version', 'post:replace', callback);
-    }
+    sequence('post:version', 'post:replace', callback);
 });
 
 gulp.task('compile', function(callback) {
@@ -249,5 +245,9 @@ gulp.task('compile', function(callback) {
 gulp.task('lint', ['lint:sass', 'lint:js', 'lint:json']);
 
 gulp.task('default', function(callback) {
-    sequence('env', 'lint', 'bower', 'compile', 'post', 'deploy', callback);
+    if (isDev) {
+        sequence('env', 'lint', 'bower', 'compile', callback);
+    } else {
+        sequence('env', 'lint', 'bower', 'compile', 'post', 'deploy', callback);
+    }
 });
